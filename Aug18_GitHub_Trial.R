@@ -113,3 +113,63 @@ Ex_A <- JL_Data %>%
   mutate(hindfoot_half=0.5*hindfoot_length) %>%
   select(species_id,hindfoot_half) %>%
   filter(!is.na(hindfoot_half),hindfoot_half<30)
+
+# Exercise B
+Sex_Data <- JL_Data %>%
+  filter(!is.na(weight),
+         sex == "F" | sex == "M") %>%
+  group_by(sex, species_id) %>% # group_by vs. select?
+  # select gives whole columns, group_by gives values within column 
+  summarize(mean_weight = mean(weight),
+            min_weight = min(weight)) 
+
+# Tally counts the total number of observations for the variable
+Sex_Data <- JL_Data %>%
+  group_by(sex) %>%
+  tally
+
+# Exercise C
+# (1) How many individuals were caught in each plot_type surveyed?
+Individuals <- JL_Data %>%
+  group_by(plot_type) %>%
+  tally
+Individuals # Answer in console
+
+# (2) Use group_by() and summarize() to find the mean, min, and max
+# hindfoot length for each species (using species_id)
+Length <- JL_Data %>%
+  select(hindfoot_length, species_id) %>%
+  filter(!is.na(hindfoot_length)) %>%
+  group_by(species_id) %>%
+  summarize(mean_length = mean(hindfoot_length),
+          min_length = min(hindfoot_length),
+          max_length = max(hindfoot_length))
+str(Length) # Answer in console
+
+# (3) What was the heaviest animal measured in each year? 
+# Return the columns year, genus, species_id, and weight. 
+Weight <- JL_Data %>%
+  select(year, genus, species_id, weight) %>%
+  filter(!is.na(weight)) %>%
+  group_by(year) %>%
+  filter(weight == max(weight)) %>%
+  arrange(year)
+
+# or
+
+Weight <- JL_Data %>%
+  select(year, genus, species_id, weight) %>%
+  group_by(year) %>%
+  top_n(1, weight)
+
+plot(Weight$species_id, Weight$weight)
+
+# (4) How can you get the same result using group_by 
+# by sex instead of year and species? 
+# Hint: see ?n
+Weight <- JL_Data %>%
+  group_by(sex) %>%
+  summarize(n())
+
+
+  
