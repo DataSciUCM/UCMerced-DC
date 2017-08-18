@@ -85,3 +85,31 @@ filter(JL_Data, year == 1995)
 JL_Data_sml <- JL_Data %>%
   filter(year == 1995) %>%
   select(year, plot_id, species_id, weight) 
+
+JL_Data_sml
+
+JL_Data %>%
+  filter(!is.na(weight)) %>% # remove NAs
+  mutate(weight_kg = weight / 1000,
+         weight_kg2 = weight_kg * 2) %>%
+  tail # just to duoble check 
+
+# Exercise A
+# Create a new data frame from the surveys data that
+# Contains only the species_id column and
+# a new column called hindfood_half containing values
+# half the hindfoot_length values (no NAs and less than 30)
+
+Ex_A <- JL_Data %>%
+  select(species_id, hindfoot_length) %>% # don't need this
+  mutate(hindfoot_half = hindfoot_length/2) %>%
+  filter((!is.na(hindfoot_half))&hindfoot_half<30) %>%
+  # previously had filter(hindfoot_half<30) %>%, shorten with &
+  select(species_id, hindfoot_half)
+# 31,436 
+
+# Alternatively
+Ex_A <- JL_Data %>%
+  mutate(hindfoot_half=0.5*hindfoot_length) %>%
+  select(species_id,hindfoot_half) %>%
+  filter(!is.na(hindfoot_half),hindfoot_half<30)
