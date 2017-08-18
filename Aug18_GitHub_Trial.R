@@ -1,4 +1,4 @@
-## my script from data carpentry UC Merced
+## My script from data carpentry UC Merced
 ## Sabah Ul-Hasan sul-hasan@ucmerced.edu
 
 ## Download data
@@ -63,3 +63,25 @@ nrow(surveys[surveys$month==1 | surveys$month==2, ])
 table(surveys$month==1 | surveys$month==2)
 length(which(surveys$month <3 ))
 
+###############################################
+###############################################
+
+# Aug 18, 2017 (using tidyverse)
+JL_Data <- surveys
+
+install.packages("tidyverse")
+library(tidyverse)
+
+# Select columns from the data frame
+select(JL_Data, plot_id, species_id, weight)
+# Similar to what we did Aug 17 (return a few columns)
+# This approach is more organized than the Aug 17 approach
+
+# Use filter to select rows where the year is 1995
+filter(JL_Data, year == 1995)
+
+# Pipe = %>%
+# Purpose of pipe function: https://goo.gl/aiPwMz
+JL_Data_sml <- JL_Data %>%
+  filter(year == 1995) %>%
+  select(year, plot_id, species_id, weight) 
