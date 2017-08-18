@@ -186,6 +186,59 @@ Species_Counts <- Complete_Data %>% # pipe for identifying common sp.
 Common_Species <- Complete_Data %>% # pipe for keeping common sp.
   filter(species_id %in% Species_Counts$species_id)
 
-write.csv(Common_Species, file = "")
+write.csv(Common_Species, file = "/Users/sul-hasan/Desktop/DC_Aug17_SUH/UCMerced-DC/Common_Species.csv")
 
-  
+###############################################
+
+# Data visualization
+library(tidyverse)
+
+CommonSpecies_Data <- read.csv( "/Users/sul-hasan/Desktop/DC_Aug17_SUH/UCMerced-DC/Common_Species.csv")
+
+# Using ggplot
+ggplot(data = CommonSpecies_Data, 
+       aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.1, 
+             aes(color = species_id)) # color by species
+
+# Exercise D
+# Create a scatter plot of weight over species_id in different colors
+# Is this is a good way to show the data?
+ggplot(data = CommonSpecies_Data, 
+       aes(x = species_id, y = weight)) +
+  geom_point(alpha = 0.1, 
+             aes(color = plot_type)) 
+# No, the color-coding by plot_type doesn't help
+# Making a boxplot may be more helpful
+
+ggplot(data = CommonSpecies_Data, 
+       aes(x = species_id, y = weight)) +
+  geom_boxplot(alpha = 0.1, 
+               aes(color = plot_type)) 
+# Doing this by color shows the variation by treatment
+
+# Time series
+yearly_counts <- CommonSpecies_Data %>%
+  group_by(year, species_id) %>%
+  tally
+yearly_counts
+
+ggplot(data = yearly_counts,
+       aes(x = year, y = n,
+            group = species_id,
+            color = species_id)) +
+  geom_line() +
+  facet_grid(~ species_id)
+
+# Refining time series by species and sex
+yearly_sex_counts <- CommonSpecies_Data %>%
+  group_by(year, species_id, sex) %>%
+  tally
+
+ggplot(data = yearly_sex_counts,
+       aes(x = year, y = n, color = sex)) +
+  geom_line() +
+  facet_wrap(~ species_id)
+
+
+
