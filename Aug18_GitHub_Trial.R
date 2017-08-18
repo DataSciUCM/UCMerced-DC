@@ -171,5 +171,21 @@ Weight <- JL_Data %>%
   group_by(sex) %>%
   summarize(n())
 
+# Export your data
+Complete_Data <- JL_Data %>%
+  filter(species_id != "", # remove missing species_id
+         !is.na(weight),
+         !is.na(hindfoot_length),
+         sex !="")
+
+Species_Counts <- Complete_Data %>% # pipe for identifying common sp.
+  group_by(species_id) %>%
+  tally %>%
+  filter(n >= 30)
+
+Common_Species <- Complete_Data %>% # pipe for keeping common sp.
+  filter(species_id %in% Species_Counts$species_id)
+
+write.csv(Common_Species, file = "")
 
   
