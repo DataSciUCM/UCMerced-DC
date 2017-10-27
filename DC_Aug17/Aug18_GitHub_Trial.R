@@ -240,5 +240,45 @@ ggplot(data = yearly_sex_counts,
   geom_line() +
   facet_wrap(~ species_id)
 
+# Exercise E
+# Create a plot to depict how the average weight of each species 
+# changes over time
+mean_weights <- CommonSpecies_Data %>%
+  select(year, species_id, weight) %>%
+  filter(!is.na(weight)) %>%
+  group_by(year, species_id) %>%
+  summarize(mean_weight = mean(weight))
 
+ggplot(data = mean_weights, 
+       aes(x = year, y = mean_weight)) +
+  geom_line(alpha = 0.5, # alpha is transparency
+             aes(color = species_id))
 
+# Trying out different themes
+install.packages("wesanderson")
+library("wesanderson")
+
+ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex)) +
+  geom_line() +
+  facet_wrap(~ species_id) +
+  labs(title = 'Observed species in time',
+       x = 'Year of observation',
+       y = 'Number of species') +
+  scale_color_manual(values = wes_palette("Cavalcanti"))
+
+# Assign the plot to the name "my_plot" to then save as a .png
+my_plot <- ggplot(data=mean_weights, 
+                  aes(x=year, y=mean_weight,
+                      color=species_id)) +
+  geom_line()+
+  facet_wrap(~ species_id)+
+  labs(x = "Year",
+       y = "Mean weight (g)") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90), 
+        legend.position="none")
+
+my_plot # view plot
+
+# Save plot to computer
+ggsave("my_plot.png", my_plot, width = 15, height = 10) 
